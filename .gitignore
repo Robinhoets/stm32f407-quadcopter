@@ -1,0 +1,16 @@
+# STM32CubeIDE build output
+Debug/
+Release/
+
+# Generic build artifacts
+*.o
+*.d
+*.elf
+*.map
+*.list
+*.su
+*.cyclo
+
+# OS/editor junk
+.DS_Store
+Thumbs.db
