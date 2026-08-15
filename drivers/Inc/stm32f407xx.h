@@ -124,6 +124,25 @@ typedef struct
 	__vo uint32_t PLLI2SCFGR;			/*!< RCC PLLI2S configuration register,								Address offset: 0x84 >*/
 }RCC_RegDef_t;
 
+typedef struct
+{
+	__vo uint32_t IMR;					/*!< Interrupt mask register,										Address offset: 0x00 >*/
+	__vo uint32_t EMR;					/*!< Event mask register,											Address offset: 0x04 >*/
+	__vo uint32_t RTSR;					/*!< Rising trigger selection register,								Address offset: 0x08 >*/
+	__vo uint32_t FTSR;					/*!< Falling trigger selection register,							Address offset: 0x0C >*/
+	__vo uint32_t SWIER;				/*!< Software interrupt event register,								Address offset: 0x10 >*/
+	__vo uint32_t PR;					/*!< Pending register,												Address offset: 0x14 >*/
+}EXTI_RegDef_t;
+
+typedef struct
+{
+	__vo uint32_t MEMRMP;				/*!< SYSCFG memory remap register,									Address offset: 0x00 >*/
+	__vo uint32_t PMC;					/*!< SYSCFG peripheral mode configuration register,					Address offset: 0x004 >*/
+	__vo uint32_t EXTICR[4];			/*!< SYSCFG external interrupt configuration register 1,2,3,4,		Address offset: 0x08 - 0x14 >*/
+	uint32_t RESERVED1[2];				/*!< 																Reserved, 0x18-0x1C >*/
+	__vo uint32_t CMPCR;				/*!< Compensation cell control register,							Address offset: 0x20 >*/
+}SYSCFG_RegDef_t;
+
 /*
  * 	Peripheral definitions.
  * 	Base addresses typecasted to xxx_RegDef_t
@@ -139,6 +158,8 @@ typedef struct
 #define GPIOI			(GPIO_RegDef_t*) GPIOI_BASEADDR
 
 #define RCC				((RCC_RegDef_t*) RCC_BASEADDR)
+
+#define EXTI			((EXTI_RegDef_t*) EXTI_BASEADDR)
 
 /*
  * 	Clock Enable Macros for GPIOx peripherals
