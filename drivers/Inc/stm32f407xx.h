@@ -161,6 +161,8 @@ typedef struct
 
 #define EXTI			((EXTI_RegDef_t*) EXTI_BASEADDR)
 
+#define SYSCFG			((SYSCFG_RegDef_t*) SYSCFG_BASEADDR)
+
 /*
  * 	Clock Enable Macros for GPIOx peripherals
  */
@@ -257,6 +259,25 @@ typedef struct
 #define GPIOG_REG_RESET()		do{ ( RCC->AHB1RSTR |= (1 << 6 ) );	( RCC->AHB1RSTR &= ~(1 << 6 ) ); }while(0)
 #define GPIOH_REG_RESET()		do{ ( RCC->AHB1RSTR |= (1 << 7 ) );	( RCC->AHB1RSTR &= ~(1 << 7 ) ); }while(0)
 #define GPIOI_REG_RESET()		do{ ( RCC->AHB1RSTR |= (1 << 8 ) );	( RCC->AHB1RSTR &= ~(1 << 8 ) ); }while(0)
+
+/*
+ * 	Returns the port code for given GPIOx base address
+ */
+#define GPIO_BASEADDR_TO_CODE(x)( (x == GPIOA)?0:\
+								  (x == GPIOB)?1:\
+								  (x == GPIOC)?2:\
+								  (x == GPIOB)?3:\
+								  (x == GPIOD)?4:\
+								  (x == GPIOE)?5:\
+								  (x == GPIOF)?6:\
+								  (x == GPIOG)?7:\
+								  (x == GPIOH)?8:\
+								  (x == GPIOI)?9:0 )
+
+/*
+ * 	IRQ (Interrupt Request) Number of STM32F407x MCU
+ */
+
 
 /***** Some generic macros *****/
 #define ENABLE 					1

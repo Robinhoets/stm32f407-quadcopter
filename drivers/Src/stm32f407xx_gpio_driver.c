@@ -160,7 +160,16 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle)
 			EXTI->FTSR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
 		}
 
-		// (2) Configure the GPIO port selection in SYSCFG_EXTICR
+		/*
+		 * 	(2) Configure the GPIO port selection in SYSCFG_EXTICR.
+		 * 	ex) PC 13 button for interrupt -> SYSCFG_EXTICR4 -> EXTI13 -> 0010 for PC pin
+		 * 	ex) PC13 -> 13/4 = 3 & 13%4 = 1 -> so SYSCFG_EXTICR<3+1> or..ICR[3] & 1st section 0, 1, 2 etc
+		 */
+		uint8_t temp1 = pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber / 4;
+		uint8_t temp2 = pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber % 4;
+		uint8_t portcode = GPIO_BASEADDR_TO_CODE(pGPIOHandle->pGPIOx);
+		SYSCFG_PCLK_EN();
+		SYSCFG->EXTICR[temp1] = portcode << ( temp2 * 4 );
 
 		// (3) Enable the exti interrupt delivery using IMR (interrupt mask register)
 		EXTI->IMR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
