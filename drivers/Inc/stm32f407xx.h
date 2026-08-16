@@ -36,6 +36,13 @@
 #define NVIC_ICER6					( (__vo uint21_t*)0xE000E198 )
 
 /*
+ * 	ARM Cortex Mx Processor Priority Register Address Calculation
+ */
+#define NVIC_PR_BASE_ADDR			( (__vo uint21_t*)0xE000E400 )
+
+#define NO_PR_BITS_IMPLEMENTED		4
+
+/*
  * 	Base addresses of Flash and SRAM memories
  * 	Reference Manual:
  * 		FLASH_BASEADDR: Table 5. Flash module organization (STM32F40x and STM32F41x)
