@@ -52,11 +52,11 @@ void GPIO_PeriClockControl(GPIO_RegDef_t *pGPIOx, uint8_t EnorDi)
 		}
 		else if(pGPIOx == GPIOG)
 		{
-			GPIOF_PCLK_EN();
+			GPIOG_PCLK_EN();
 		}
 		else if(pGPIOx == GPIOH)
 		{
-			GPIOF_PCLK_EN();
+			GPIOH_PCLK_EN();
 		}
 		else if(pGPIOx == GPIOI)
 		{
@@ -91,11 +91,11 @@ void GPIO_PeriClockControl(GPIO_RegDef_t *pGPIOx, uint8_t EnorDi)
 		}
 		else if(pGPIOx == GPIOG)
 		{
-			GPIOF_PCLK_DI();
+			GPIOG_PCLK_DI();
 		}
 		else if(pGPIOx == GPIOH)
 		{
-			GPIOF_PCLK_DI();
+			GPIOH_PCLK_DI();
 		}
 		else if(pGPIOx == GPIOI)
 		{
@@ -406,7 +406,7 @@ void GPIO_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi)
 		{
 			*NVIC_ISER1 |= ( 1 << IRQNumber % 32);
 		}
-		else if(IRQNumber >= 64 && IRQnumber < 96)
+		else if(IRQNumber >= 64 && IRQNumber < 96)
 		{
 			*NVIC_ISER2 |= ( 1 << IRQNumber % 64);
 		}
@@ -421,7 +421,7 @@ void GPIO_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi)
 		{
 			*NVIC_ICER1 |= ( 1 << IRQNumber % 32);
 		}
-		else if(IRQNumber >= 64 && IRQnumber < 96)
+		else if(IRQNumber >= 64 && IRQNumber < 96)
 		{
 			*NVIC_ICER2 |= ( 1 << IRQNumber % 64);
 		}
@@ -433,9 +433,11 @@ void GPIO_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi)
  *
  * @brief			- Set the priority of an interrupt.
  *
- * @param[in]		-
+ * @param[in]		- The number of the interrupt being called.
  *
- * @return			-
+ * @param[in]		- The priority of the interrupt to be set.
+ *
+ * @return			- none
  *
  * @Note			-
  */
@@ -453,9 +455,9 @@ void GPIO_IRQPriorityConfig(uint8_t IRQNumber, uint8_t IRQPriority)
 }
 
 /***************************************************************************
- * @fn				-
+ * @fn				- GPIO_IRQHandling
  *
- * @brief			-
+ * @brief			- Process the interrupt. Implementing the interrupt happens in user code.
  *
  * @param[in]		-
  *
@@ -465,6 +467,10 @@ void GPIO_IRQPriorityConfig(uint8_t IRQNumber, uint8_t IRQPriority)
  */
 void GPIO_IRQHandling(uint8_t PinNumber)
 {
-
+	// clear the exti pr register corresponding to the pin number
+	if(EXTI->PR & (1 << PinNumber))
+	{
+		EXTI->PR |= (1 << PinNumber);
+	}
 }
 
