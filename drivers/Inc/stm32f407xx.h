@@ -169,8 +169,10 @@ typedef struct
 	__vo uint32_t MEMRMP;				/*!< SYSCFG memory remap register,									Address offset: 0x00 >*/
 	__vo uint32_t PMC;					/*!< SYSCFG peripheral mode configuration register,					Address offset: 0x004 >*/
 	__vo uint32_t EXTICR[4];			/*!< SYSCFG external interrupt configuration register 1,2,3,4,		Address offset: 0x08 - 0x14 >*/
-	uint32_t RESERVED1[2];				/*!< 																Reserved, 0x18-0x1C >*/
+	uint32_t 	  RESERVED1[2];				/*!< 																Reserved, 0x18-0x1C >*/
 	__vo uint32_t CMPCR;				/*!< Compensation cell control register,							Address offset: 0x20 >*/
+	uint32_t	  RESERVED2[2];
+	__vo uint32_t CFGR;
 }SYSCFG_RegDef_t;
 
 /*
@@ -293,20 +295,46 @@ typedef struct
 /*
  * 	Returns the port code for given GPIOx base address
  */
-#define GPIO_BASEADDR_TO_CODE(x)( (x == GPIOA)?0:\
-								  (x == GPIOB)?1:\
-								  (x == GPIOC)?2:\
-								  (x == GPIOB)?3:\
-								  (x == GPIOD)?4:\
-								  (x == GPIOE)?5:\
-								  (x == GPIOF)?6:\
-								  (x == GPIOG)?7:\
-								  (x == GPIOH)?8:\
-								  (x == GPIOI)?9:0 )
+#define GPIO_BASEADDR_TO_CODE(x)    ( (x == GPIOA)?0:\
+                                      (x == GPIOB)?1:\
+                                      (x == GPIOC)?2:\
+                                      (x == GPIOD)?3:\
+                                      (x == GPIOE)?4:\
+                                      (x == GPIOF)?5:\
+                                      (x == GPIOG)?6:\
+                                      (x == GPIOH)?7:\
+                                      (x == GPIOI)?8:0 )
 
 /*
  * 	IRQ (Interrupt Request) Number of STM32F407x MCU
  */
+#define IRQ_NO_EXTI0			6
+#define IRQ_NO_EXTI1			7
+#define IRQ_NO_EXTI2			8
+#define IRQ_NO_EXTI3			9
+#define IRQ_NO_EXTI4			10
+#define IRQ_NO_EXTI9_5			23
+#define IRQ_NO_EXTI15_10		40
+
+/*
+ * 	Priority Levels
+ */
+#define NVIC_IRQ_PRI0			0
+#define NVIC_IRQ_PRI1			1
+#define NVIC_IRQ_PRI2			2
+#define NVIC_IRQ_PRI3			3
+#define NVIC_IRQ_PRI4			4
+#define NVIC_IRQ_PRI5			5
+#define NVIC_IRQ_PRI6			6
+#define NVIC_IRQ_PRI7			7
+#define NVIC_IRQ_PRI8			8
+#define NVIC_IRQ_PRI9			9
+#define NVIC_IRQ_PRI10			10
+#define NVIC_IRQ_PRI11			11
+#define NVIC_IRQ_PRI12			12
+#define NVIC_IRQ_PRI13			13
+#define NVIC_IRQ_PRI14			14
+#define NVIC_IRQ_PRI15			15
 
 
 /***** Some generic macros *****/
