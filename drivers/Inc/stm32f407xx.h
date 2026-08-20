@@ -63,7 +63,7 @@
  *		Table 2.3 - beginning of APB1 is 0x4000 0000 - TIM2
  */
 #define PERIPH_BASEADDR				0x40000000U
-#define APB1PERIPH_BASEADDR			PERIPH_BASE
+#define APB1PERIPH_BASEADDR			PERIPH_BASEADDR
 #define APB2PERIPH_BASEADDR			0x40010000U
 #define AHB1PERIPH_BASEADDR			0x40020000U
 #define AHB2PERIPH_BASEADDR			0x50000000U
@@ -211,9 +211,9 @@ typedef struct
 
 #define SYSCFG			((SYSCFG_RegDef_t*) SYSCFG_BASEADDR)
 
-#define SPI1			((SPI_RegDef_t*)SPI1_BASE)
-#define SPI2			((SPI_RegDef_t*)SPI2_BASE)
-#define SPI3			((SPI_RegDef_t*)SPI3_BASE)
+#define SPI1			((SPI_RegDef_t*)SPI1_BASEADDR)
+#define SPI2			((SPI_RegDef_t*)SPI2_BASEADDR)
+#define SPI3			((SPI_RegDef_t*)SPI3_BASEADDR)
 
 /*
  * 	Clock Enable Macros for GPIOx peripherals
@@ -366,5 +366,6 @@ typedef struct
 #define GPIO_PIN_RESET			RESET
 
 #include "stm32f407xx_gpio_driver.h"
+#include "stm32f407xx_spi_driver.h"
 
 #endif /* INC_STM32F407XX_H_ */

@@ -1,0 +1,180 @@
+/*
+ * stm32f407xx_spi_driver.c
+ *
+ *  Created on: Aug 20, 2026
+ *      Author: Robert
+ */
+#include "stm32f407xx_spi_driver.h"
+/*
+ * 	Peripheral Clock setup
+ */
+/***************************************************************************
+ * @fn				- SPI_PeriClockControl
+ *
+ * @brief			-
+ *
+ * @param[in]		-
+ * @param[in]		-
+ *
+ * @return			-
+ *
+ * @Note			-
+ */
+void SPI_PeriClockControl(SPI_RegDef_t *pSPIx, uint8_t EnorDi)
+{
+	if(EnorDi == ENABLE)
+	{
+		if(pSPIx== SPI1)
+		{
+			SPI1_PCLK_EN();
+		}
+		else if(pSPIx == SPI2)
+		{
+			SPI2_PCLK_EN();
+		}
+		else if(pSPIx == SPI3)
+		{
+			SPI3_PCLK_EN();
+		}
+	}
+	else
+	{
+		if(pSPIx== SPI1)
+		{
+			SPI1_PCLK_DI();
+		}
+		else if(pSPIx == SPI2)
+		{
+			SPI2_PCLK_DI();
+		}
+		else if(pSPIx == SPI3)
+		{
+			SPI3_PCLK_DI();
+		}
+	}
+}
+
+/*
+ * 	Initialize and De-initialize
+ */
+/***************************************************************************
+ * @fn				-
+ *
+ * @brief			-
+ *
+ * @param[in]		-
+ * @param[in]		-
+ *
+ * @return			-
+ *
+ * @Note			-
+ */
+void SPI_Init(SPI_Handle_t *pSPIHandle)
+{
+
+}
+/***************************************************************************
+ * @fn				-
+ *
+ * @brief			-
+ *
+ * @param[in]		-
+ * @param[in]		-
+ *
+ * @return			-
+ *
+ * @Note			-
+ */
+void SPI_DeInit(SPI_RegDef_t *pSPIx)
+{
+
+}
+
+/*
+ * 	Data Send and Receive
+ * 	(aside: blocking is non-interrupt based & non-blocking is interrupt based)
+ */
+/***************************************************************************
+ * @fn				-
+ *
+ * @brief			-
+ *
+ * @param[in]		-
+ * @param[in]		-
+ *
+ * @return			-
+ *
+ * @Note			-
+ */
+void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len)
+{
+
+}
+/***************************************************************************
+ * @fn				-
+ *
+ * @brief			-
+ *
+ * @param[in]		-
+ * @param[in]		-
+ *
+ * @return			-
+ *
+ * @Note			-
+ */
+void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer, uint32_t Len)
+{
+
+}
+
+/*
+ * 	IRQ Configuration and ISR Handling
+ */
+/***************************************************************************
+ * @fn				-
+ *
+ * @brief			-
+ *
+ * @param[in]		-
+ * @param[in]		-
+ *
+ * @return			-
+ *
+ * @Note			-
+ */
+void SPI_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi)
+{
+
+}
+/***************************************************************************
+ * @fn				-
+ *
+ * @brief			-
+ *
+ * @param[in]		-
+ * @param[in]		-
+ *
+ * @return			-
+ *
+ * @Note			-
+ */
+void SPI_IRQPriorityConfig(uint8_t IRQNumber, uint8_t IRQPriority)
+{
+
+}
+/***************************************************************************
+ * @fn				-
+ *
+ * @brief			-
+ *
+ * @param[in]		-
+ * @param[in]		-
+ *
+ * @return			-
+ *
+ * @Note			-
+ */
+void SPI_IRQHandling(SPI_Handle_t *pHandle)
+{
+
+}
