@@ -313,6 +313,13 @@ typedef struct
 #define GPIOI_REG_RESET()		do{ ( RCC->AHB1RSTR |= (1 << 8 ) );	( RCC->AHB1RSTR &= ~(1 << 8 ) ); }while(0)
 
 /*
+ * 	Macros to reset SPIx peripherals
+ */
+#define SPI1_REG_RESET()
+#define SPI2_REG_RESET()
+#define SPI3_REG_RESET()
+
+/*
  * 	Returns the port code for given GPIOx base address
  */
 #define GPIO_BASEADDR_TO_CODE(x)    ( (x == GPIOA)?0:\
