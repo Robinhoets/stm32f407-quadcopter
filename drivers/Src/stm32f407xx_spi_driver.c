@@ -58,9 +58,10 @@ void SPI_PeriClockControl(SPI_RegDef_t *pSPIx, uint8_t EnorDi)
  * 	Initialize and De-initialize
  */
 /***************************************************************************
- * @fn				-
+ * @fn				- SPI_Init
  *
- * @brief			-
+ * @brief			- Initialize the given SPI by configuring it with the settings passed
+ * 						in the parameter
  *
  * @param[in]		-
  * @param[in]		-
@@ -71,6 +72,45 @@ void SPI_PeriClockControl(SPI_RegDef_t *pSPIx, uint8_t EnorDi)
  */
 void SPI_Init(SPI_Handle_t *pSPIHandle)
 {
+	/*
+	 * 	1 - Configure device mode
+	 * 	2 - Configure the bus config
+	 * 			FD -> bidi mode cleared
+	 * 			HD -> bidi mode set
+	 * 			Simplex -> bidi mode cleared & RX bit set
+	 * 	3 - Configure SclkSpeed
+	 * 	4 - Configure DFF
+	 * 	5 - Configure CPOL
+	 * 	6 - Configure CPHA
+	 */
+	uint32_t tempreg = 0;
+	// (1)
+	tempreg |= pSPIHandle->SPIConfig.SPI_DeviceMode << SPI_CR1_MSTR;
+	// (2)
+	if(pSPIHandle->SPIConfig.SPI_BusConfig == SPI_BUS_CONFIG_FD)
+	{
+		tempreg &= ~(1 << SPI_CR1_BIDI_MODE);
+	}
+	else if(pSPIHandle->SPIConfig.SPI_BusConfig == SPI_BUS_CONFIG_HD)
+	{
+		tempreg |= ~(1 << SPI_CR1_BIDI_MODE);
+
+	}
+	else if(pSPIHandle->SPIConfig.SPI_BusConfig == SPI_BUS_CONFIG_SIMPLEX_RXONLY)
+	{
+		tempreg &= ~(1 << SPI_CR1_BIDI_MODE);
+		tempreg |= ~(1 << SPI_CR1_RX_ONLY);
+	}
+	// (3)
+	tempreg |= pSPIHandle->SPIConfig.SPI_SclkSpeed << SPI_CR1_BR;
+	// (4)
+	tempreg |= pSPIHandle->SPIConfig.SPI_DFF << SPI_CR1_DFF;
+	// (5)
+	tempreg |= pSPIHandle->SPIConfig.SPI_CPOL << SPI_CR1_CPOL;
+	//(6)
+	tempreg |= pSPIHandle->SPIConfig.SPI_CPHA << SPI_CR1_CPHA;
+
+	pSPIHandle->pSPIx->CR1 = tempreg;
 
 }
 /***************************************************************************
