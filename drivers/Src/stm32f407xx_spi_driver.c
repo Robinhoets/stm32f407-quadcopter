@@ -63,10 +63,9 @@ void SPI_PeriClockControl(SPI_RegDef_t *pSPIx, uint8_t EnorDi)
  * @brief			- Initialize the given SPI by configuring it with the settings passed
  * 						in the parameter
  *
- * @param[in]		-
- * @param[in]		-
+ * @param[in]		- *pGPIOHandle points the the SPI pin we want to initialize
  *
- * @return			-
+ * @return			- none
  *
  * @Note			-
  */
@@ -114,14 +113,13 @@ void SPI_Init(SPI_Handle_t *pSPIHandle)
 
 }
 /***************************************************************************
- * @fn				-
+ * @fn				- SPI_DeInit
  *
- * @brief			-
+ * @brief			- De-initialize a SPI at a given address
  *
- * @param[in]		-
- * @param[in]		-
+ * @param[in]		- base address of the SPI port
  *
- * @return			-
+ * @return			- none
  *
  * @Note			-
  */
