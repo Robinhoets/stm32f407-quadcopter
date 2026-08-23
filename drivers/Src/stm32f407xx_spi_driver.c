@@ -143,28 +143,83 @@ void SPI_DeInit(SPI_RegDef_t *pSPIx)
  * 	Data Send and Receive
  * 	(aside: blocking is non-interrupt based & non-blocking is interrupt based)
  */
+
 /***************************************************************************
- * @fn				-
+ * @fn				- SPI_GetFlagStatus
+ *
+ * @brief			- Check to see if a flag is set in Status Register
+ *
+ * @param[in]		- *pSPIx is the base address
+ *
+ * @param[in]		- FlagName
+ *
+ * @return			- True (1) or false (0)
+ *
+ * @Note			- If SPI_TXE_FLAG ( 1 << SPI_SR_TXE) is set in the
+ * 						pSPIx->StatusRegister, return Flag_SET
+ */
+uint8_t SPI_GetFlagStatus(SPI_RegDef_t *pSPIx, uint32_t FlagName)
+{
+
+	if(pSPIx->SR & FlagName)
+	{
+		return FLAG_SET;
+	}
+	return FLAG_RESET;
+}
+
+/***************************************************************************
+ * @fn				- SPI_SendData
  *
  * @brief			-
  *
- * @param[in]		-
- * @param[in]		-
+ * @param[in]		-*pSPIx is the base address
+ *
+ * @param[in]		-*pTxBuffer is the pointer to the data
+ *
+ * @param[in]		- Len is the number of bytes to transmit
  *
  * @return			-
  *
- * @Note			-
+ * @Note			- Blocking api. Check len - if 0 exit. Else:
+ * 						 Wait until the tx buffer is empty (otherwise data
+ * 						 	already in there will be corrupted). Get this info
+ * 						 	in the status register SPI_SR - TXE == 1.
+ * 						 Check DFF. 0 == 8 -bit. 1 == 16-bit.
+ * 						 Load data register (DR) with 1 byte of data.
+ * 						 	A write to the data register writes into the Tx
+ * 						 	buffer and a read from the data register returns
+ * 						 	the value held in the Rx buffer.
+ * 						 Increment the buffer address.
+ * 						 Decrement Len--.
  */
-void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len)
+void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer, uint32_t Len)
 {
+	while(Len > 0)
+	{
+		/*
+		 * 	wait until txe is set
+		 * 	checks status register
+		 * 	if expression is not 0, txe is not set - hang
+		 */
+//		while(! (pSPIx->SR & (1 << 1)) );
+		while( SPI_GetFlagStatus(pSPIx,SPI_TXE_FLAG) == FLAG_RESET );
 
+
+	}
 }
+
+
+
 /***************************************************************************
  * @fn				-
  *
  * @brief			-
  *
  * @param[in]		-
+ *
+ * @param[in]		-
+ *
  * @param[in]		-
  *
  * @return			-
