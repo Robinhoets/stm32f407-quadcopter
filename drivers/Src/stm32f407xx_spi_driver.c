@@ -112,6 +112,8 @@ void SPI_Init(SPI_Handle_t *pSPIHandle)
 	//(7)
 	tempreg |= pSPIHandle->SPIConfig.SPI_CPHA << SPI_CR1_CPHA;
 
+	tempreg |= pSPIHandle->SPIConfig.SPI_SSM << SPI_CR1_SSM;
+
 	pSPIHandle->pSPIx->CR1 = tempreg;
 
 }
@@ -258,7 +260,7 @@ void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer, uint32_t Len)
 }
 
 /***************************************************************************
- * @fn				-
+ * @fn				- SPI_PeripheralControl
  *
  * @brief			-
  *
@@ -278,6 +280,32 @@ void SPI_PeripheralControl(SPI_RegDef_t *pSPIx,uint8_t EnOrDi)
 	else
 	{
 		pSPIx->CR1 &= ~(1 << SPI_CR1_SPE);
+	}
+}
+
+/***************************************************************************
+ * @fn				- SPI_SSIConfig
+ *
+ * @brief			- Makes NSS signal internally high. If not set, master
+ * 						gets cleared and device becomes slave because of MODF
+ * 						error.
+ *
+ * @param[in]		-
+ * @param[in]		-
+ *
+ * @return			-
+ *
+ * @Note			-
+ */
+void SPI_SSIConfig(SPI_RegDef_t *pSPIx,uint8_t EnOrDi)
+{
+	if(EnOrDi == ENABLE)
+	{
+		pSPIx->CR1 |= (1 << SPI_CR1_SSI);
+	}
+	else
+	{
+		pSPIx->CR1 &= ~(1 << SPI_CR1_SSI);
 	}
 }
 
