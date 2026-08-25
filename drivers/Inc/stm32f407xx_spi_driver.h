@@ -116,6 +116,6 @@ void SPI_IRQHandling(SPI_Handle_t *pHandle);
 /*
  * 	Other Peripheral Control APIs
  */
-
+void SPI_PeripheralControl(SPI_RegDef_t *pSPIx,uint8_t EnOrDi);
 
 #endif
