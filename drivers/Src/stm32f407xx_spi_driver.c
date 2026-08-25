@@ -171,7 +171,8 @@ uint8_t SPI_GetFlagStatus(SPI_RegDef_t *pSPIx, uint32_t FlagName)
 /***************************************************************************
  * @fn				- SPI_SendData
  *
- * @brief			-
+ * @brief			- Blocking call until SPI_TXE flag reset and then transfer
+ * 						all bytes into pSPIx->DR.
  *
  * @param[in]		-*pSPIx is the base address
  *
@@ -182,10 +183,10 @@ uint8_t SPI_GetFlagStatus(SPI_RegDef_t *pSPIx, uint32_t FlagName)
  * @return			-
  *
  * @Note			- Blocking api. Check len - if 0 exit. Else:
- * 						 Wait until the tx buffer is empty (otherwise data
+ * 						 (1) Wait until the tx buffer is empty (otherwise data
  * 						 	already in there will be corrupted). Get this info
  * 						 	in the status register SPI_SR - TXE == 1.
- * 						 Check DFF. 0 == 8 -bit. 1 == 16-bit.
+ * 						 (2) Check DFF. 0 == 8 -bit. 1 == 16-bit.
  * 						 Load data register (DR) with 1 byte of data.
  * 						 	A write to the data register writes into the Tx
  * 						 	buffer and a read from the data register returns
@@ -193,17 +194,39 @@ uint8_t SPI_GetFlagStatus(SPI_RegDef_t *pSPIx, uint32_t FlagName)
  * 						 Increment the buffer address.
  * 						 Decrement Len--.
  */
-void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer, uint32_t Len)
+void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len)
 {
 	while(Len > 0)
 	{
 		/*
+		 *  (1)
 		 * 	wait until txe is set
 		 * 	checks status register
 		 * 	if expression is not 0, txe is not set - hang
 		 */
-//		while(! (pSPIx->SR & (1 << 1)) );
 		while( SPI_GetFlagStatus(pSPIx,SPI_TXE_FLAG) == FLAG_RESET );
+
+		/*
+		 *  (2)
+		 *  if -> 16 bit dff
+		 *  else -> 8 bit dff
+		 */
+		if( (pSPIx->CR1 & (1 << SPI_CR1_DFF ) ) )
+		{
+			// load data into the DR. Typecast for two bytes
+			pSPIx->DR = *((uint16_t*)pTxBuffer);
+			// decrease Len bc sent out two bytes of data
+			Len--;
+			Len--;
+			// point to next data item
+			(uint16_t*)pTxBuffer++;
+		}
+		else
+		{
+			pSPIx->DR = *((uint8_t*)pTxBuffer);
+			Len--;
+			pTxBuffer++;
+		}
 
 
 	}
