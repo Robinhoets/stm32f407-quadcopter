@@ -11,12 +11,19 @@
 /*
  * SPI2:
  * 	PB14 -> MISO
- * 	PB15 ->
+ * 	PB15 -> MOSI
  * 	PB13 -> SCLK
  * 	PB12 -> NSS
  *	ALT function mode : 5
  */
 
+/*
+ * 	In Master, if SSM = 0
+ * 		and SPE pulled to 1 -> NSS = 0
+ * 		or SPE pulled to 0 -> NSS = 1
+ * 	In Slave, SSOE must be enabled to get above results
+ * 	(Slave Select Output Enabled)
+ */
 void SPI2_GPIOInits(void)
 {
 	GPIO_Handle_t SPIPins;
@@ -40,9 +47,9 @@ void SPI2_GPIOInits(void)
 //	SPIPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_14;
 //	GPIO_Init(&SPIPins);
 //
-//	// NSS
-//	SPIPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_13;
-//	GPIO_Init(&SPIPins);
+	// NSS
+	SPIPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_13;
+	GPIO_Init(&SPIPins);
 }
 
 void SPI2_Inits()
@@ -52,11 +59,11 @@ void SPI2_Inits()
 	SPI2handle.pSPIx = SPI2;
 	SPI2handle.SPIConfig.SPI_BusConfig = SPI_BUS_CONFIG_FD;
 	SPI2handle.SPIConfig.SPI_DeviceMode = SPI_DEVICE_MODE_MASTER;
-	SPI2handle.SPIConfig.SPI_SclkSpeed = SPI_SCLK_SPEED_DIV256;	// 8MHz
+	SPI2handle.SPIConfig.SPI_SclkSpeed = SPI_SCLK_SPEED_DIV8;	// 2MHz
 	SPI2handle.SPIConfig.SPI_DFF = SPI_DFF_8BITS;
 	SPI2handle.SPIConfig.SPI_CPOL = SPI_CPOL_LOW;
 	SPI2handle.SPIConfig.SPI_CPHA = SPI_CPHA_LOW;
-	SPI2handle.SPIConfig.SPI_SSM = SPI_SSM_EN;
+	SPI2handle.SPIConfig.SPI_SSM = SPI_SSM_DI;					// Hardware slave
 
 	SPI_Init(&SPI2handle);
 }
@@ -71,7 +78,7 @@ int main()
 
 	SPI2_Inits();
 
-	SPI_SSIConfig(SPI2, ENABLE);
+//	SPI_SSIConfig(SPI2, ENABLE);
 
 	// do inits before enabling the SPI peripheral
 	SPI_PeripheralControl(SPI2, ENABLE);
@@ -79,36 +86,17 @@ int main()
 	SPI_SendData(SPI2, (uint8_t*)user_data, strlen(user_data));
 
 	// Disable
-//	SPI_PeripheralControl(SPI2,Disable);
+	SPI_PeripheralControl(SPI2,Disable);
 
-//	while(1);
-	while(1)
-	{
-	    SPI_SendData(SPI2, (uint8_t *)user_data, strlen(user_data));
-
-	    while(SPI_GetFlagStatus(SPI2, SPI_BUSY_FLAG));
-
-	    for(volatile uint32_t i = 0; i < 1000000; i++);
-	}
+	while(1);
+//	while(1)
+//	{
+//	    SPI_SendData(SPI2, (uint8_t *)user_data, strlen(user_data));
+//
+//	    while(SPI_GetFlagStatus(SPI2, SPI_BUSY_FLAG));
+//
+//	    for(volatile uint32_t i = 0; i < 1000000; i++);
+//	}
 	return 0;
 }
-//int main(void)
-//{
-//    GPIO_Handle_t testPin = {0};
-//
-//    testPin.pGPIOx = GPIOB;
-//    testPin.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_13;
-//    testPin.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_OUT;
-//    testPin.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_FAST;
-//    testPin.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_PP;
-//    testPin.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_NO_PUPD;
-//
-//    GPIO_Init(&testPin);
-//
-//    while(1)
-//    {
-//        GPIO_ToggleOutputPin(GPIOB, GPIO_PIN_NO_13);
-//
-//        for(volatile uint32_t delay = 0; delay < 100000; delay++);
-//    }
-//}
+
