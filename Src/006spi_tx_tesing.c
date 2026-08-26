@@ -78,18 +78,23 @@ int main()
 
 	SPI_SendData(SPI2, (uint8_t*)user_data, strlen(user_data));
 
+	/*
+	 * 	confirm spy is not busy - if returns 1, busy
+	 * 	busy is maintainted by stm32 hardware in the SPI_SR BSY register
+	 */
+	while( SPI_GetFlagStatus(SPI2, SPI_BUSY_FLAG) );
 	// Disable
-//	SPI_PeripheralControl(SPI2,Disable);
+	SPI_PeripheralControl(SPI2,Disable);
 
-//	while(1);
-	while(1)
-	{
-	    SPI_SendData(SPI2, (uint8_t *)user_data, strlen(user_data));
-
-	    while(SPI_GetFlagStatus(SPI2, SPI_BUSY_FLAG));
-
-	    for(volatile uint32_t i = 0; i < 1000000; i++);
-	}
+	while(1);
+//	while(1)
+//	{
+//	    SPI_SendData(SPI2, (uint8_t *)user_data, strlen(user_data));
+//
+//	    while(SPI_GetFlagStatus(SPI2, SPI_BUSY_FLAG));
+//
+//	    for(volatile uint32_t i = 0; i < 1000000; i++);
+//	}
 	return 0;
 }
 //int main(void)

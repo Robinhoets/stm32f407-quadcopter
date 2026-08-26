@@ -309,6 +309,32 @@ void SPI_SSIConfig(SPI_RegDef_t *pSPIx,uint8_t EnOrDi)
 	}
 }
 
+/***************************************************************************
+ * @fn				- SPI_SSOEConfig
+ *
+ * @brief			- Configure the Slave Select Output Enabled so that we
+ * 						can pull NSS high and low.
+ *
+ * @param[in]		- SPI_RegDef_t
+ *
+ * @param[in]		- EnOrDi
+ *
+ * @return			- none
+ *
+ * @Note			-
+ */
+void SPI_SSOEConfig(SPI_RegDef_t *pSPIx,uint8_t EnOrDi)
+{
+	if(EnOrDi == ENABLE)
+	{
+		pSPIx->CR2 |= (1 << SPI_CR2_SSOE);
+	}
+	else
+	{
+		pSPIx->CR2 &= ~(1 << SPI_CR2_SSOE);
+	}
+}
+
 /*
  * 	IRQ Configuration and ISR Handling
  */

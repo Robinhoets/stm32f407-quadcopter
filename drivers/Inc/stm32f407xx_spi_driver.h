@@ -105,10 +105,7 @@ void SPI_DeInit(SPI_RegDef_t *pSPIx);
  */
 void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len);
 void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer, uint32_t Len);
-uint8_t SPI_GetFlagStatus(
-    SPI_RegDef_t *pSPIx,
-    uint32_t FlagName
-);
+
 
 /*
  * 	IRQ Configuration and ISR Handling
@@ -122,5 +119,7 @@ void SPI_IRQHandling(SPI_Handle_t *pHandle);
  */
 void SPI_PeripheralControl(SPI_RegDef_t *pSPIx,uint8_t EnOrDi);
 void SPI_SSIConfig(SPI_RegDef_t *pSPIx,uint8_t EnOrDi);
+void SPI_SSOEConfig(SPI_RegDef_t *pSPIx,uint8_t EnOrDi);
+uint8_t SPI_GetFlagStatus(SPI_RegDef_t *pSPIx, uint32_t FlagName);
 
 #endif
