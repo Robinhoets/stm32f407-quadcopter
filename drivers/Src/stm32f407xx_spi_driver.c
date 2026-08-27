@@ -232,15 +232,13 @@ void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len)
 			Len--;
 			pTxBuffer++;
 		}
-
-
 	}
 }
 
 
 
 /***************************************************************************
- * @fn				-
+ * @fn				- SPI_ReceiveData
  *
  * @brief			-
  *
@@ -256,7 +254,40 @@ void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len)
  */
 void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer, uint32_t Len)
 {
+	while(Len > 0)
+	{
+		/*
+		 *  (1)
+		 * 	wait until rxne is set
+		 * 	checks status register
+		 * 	if expression is not 0, rxne is not set - hang
+		 */
+		while( SPI_GetFlagStatus(pSPIx,SPI_RXNE_FLAG) == FLAG_RESET );
 
+		/*
+		 *  (2)
+		 *  if -> 16 bit dff
+		 *  else -> 8 bit dff
+		 */
+		if( (pSPIx->CR1 & (1 << SPI_CR1_DFF ) ) )
+		{
+			// load data from DR to rx
+			*((uint16_t*)pRxBuffer) pSPIx->DR;
+			// decrease Len bc sent out two bytes of data
+			Len--;
+			Len--;
+			// point to next data item
+			(uint16_t*)pRxBuffer++;
+		}
+		else
+		{
+			*((uint16_t*)pRxBuffer) pSPIx->DR;
+			Len--;
+			pRxBuffer++;
+		}
+
+
+	}
 }
 
 /***************************************************************************
