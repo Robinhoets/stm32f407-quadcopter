@@ -272,7 +272,7 @@ void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer, uint32_t Len)
 		if( (pSPIx->CR1 & (1 << SPI_CR1_DFF ) ) )
 		{
 			// load data from DR to rx
-			*((uint16_t*)pRxBuffer) pSPIx->DR;
+			*((uint16_t*)pRxBuffer) = pSPIx->DR;
 			// decrease Len bc sent out two bytes of data
 			Len--;
 			Len--;
@@ -281,7 +281,7 @@ void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer, uint32_t Len)
 		}
 		else
 		{
-			*((uint16_t*)pRxBuffer) pSPIx->DR;
+			*((uint16_t*)pRxBuffer) = pSPIx->DR;
 			Len--;
 			pRxBuffer++;
 		}
