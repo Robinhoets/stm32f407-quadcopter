@@ -135,11 +135,6 @@ int _write(int file, char *ptr, int len)
 
     return len;
 }
-int __io_putchar(int ch)
-{
-    ITM_SendChar(ch);
-    return ch;
-}
 
 
 /*

@@ -367,24 +367,114 @@ void SPI_SSOEConfig(SPI_RegDef_t *pSPIx,uint8_t EnOrDi)
 }
 
 /*
- * 	IRQ Configuration and ISR Handling
+ * 	IRQ Configuration and ISR handling
  */
+
 /***************************************************************************
- * @fn				-
+ * @fn				- SPI_IRQConfig
  *
- * @brief			-
+ * @brief			- Enable or disables the correct interrupt.
  *
- * @param[in]		-
- * @param[in]		-
+ * @param[in]		- The interrupt number the user calls.
  *
- * @return			-
+ * @param[in]		- Whether to enable or disable.
+ *
+ * @return			- none
  *
  * @Note			-
  */
 void SPI_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi)
 {
+	if(EnorDi == ENABLE)
+	{
+		/*
+		 * 	if -> ISER0 register
+		 * 	else if -> ISER1 register
+		 * 	else if -> ISER2 register
+		 */
+		if(IRQNumber <= 31)
+		{
+			*NVIC_ISER0 |= ( 1 << IRQNumber);
+		}
+		else if(IRQNumber > 31 && IRQNumber < 64)
+		{
+			*NVIC_ISER1 |= ( 1 << IRQNumber % 32);
+		}
+		else if(IRQNumber >= 64 && IRQNumber < 96)
+		{
+			*NVIC_ISER2 |= ( 1 << IRQNumber % 64);
+		}
+	}
+	else
+	{
+		if(IRQNumber <= 31)
+		{
+			*NVIC_ICER0 |= ( 1 << IRQNumber);
+		}
+		else if(IRQNumber > 31 && IRQNumber < 64)
+		{
+			*NVIC_ICER1 |= ( 1 << IRQNumber % 32);
+		}
+		else if(IRQNumber >= 64 && IRQNumber < 96)
+		{
+			*NVIC_ICER2 |= ( 1 << IRQNumber % 64);
+		}
+	}
+}
+
+/***************************************************************************
+ * @fn				- SPI_IRQPriorityConfig
+ *
+ * @brief			- Set the priority of an interrupt.
+ *
+ * @param[in]		- The number of the interrupt being called.
+ *
+ * @param[in]		- The priority of the interrupt to be set.
+ *
+ * @return			- none
+ *
+ * @Note			-
+ */
+void SPI_IRQPriorityConfig(uint8_t IRQNumber, uint8_t IRQPriority)
+{
+	/*
+	 * 	1 - find IPR register
+	 */
+	uint8_t iprx = IRQNumber / 4;
+	uint8_t iprx_section = IRQNumber % 4;
+
+	// shift by 4 to put into top 4 bits of 8 bit address
+	uint8_t shift_amount = (8 * iprx_section) + (8 - NO_PR_BITS_IMPLEMENTED);
+//	*(NVIC_PR_BASE_ADDR + (iprx * 4)) |= ( IRQPriority << shift_amount );
+	*(NVIC_PR_BASE_ADDR + iprx) |= ( IRQPriority << shift_amount );
+}
+/***************************************************************************
+ * @fn				- SPI_SendDataIT
+ *
+ * @brief			-
+ *
+ * @param[in]		-
+ * @param[in]		-
+ *
+ * @return			-
+ *
+ * @Note			-
+ */
+void SPI_SendDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pTxBuffer, uint32_t Len)
+{
+	/*
+	 * 	1 - Save the Tx buffer address and Len information in some global variables
+	 * 	2 - Mark the SPI state as busy in transmission so that no other code can
+	 * 		take over the same SPI peripheral until transmission is over
+	 * 	3 - Enable the TXEIE control bit to get interrupt whenever the TXE flas is
+	 * 		set in SR
+	 * 	4 - Data transmission will be handle by the ISR code
+	 */
+
+	// (1)
 
 }
+
 /***************************************************************************
  * @fn				-
  *
@@ -397,10 +487,11 @@ void SPI_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi)
  *
  * @Note			-
  */
-void SPI_IRQPriorityConfig(uint8_t IRQNumber, uint8_t IRQPriority)
+void SPI_ReceiveDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pRxBuffer, uint32_t Len)
 {
 
 }
+
 /***************************************************************************
  * @fn				-
  *
