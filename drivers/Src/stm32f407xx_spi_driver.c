@@ -491,12 +491,16 @@ uint8_t SPI_SendDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pTxBuffer, uint32_t Le
 }
 
 /***************************************************************************
- * @fn				-
+ * @fn				- SPI_ReceiveDataIT
  *
- * @brief			-
+ * @brief			- Non blocking receive data
  *
- * @param[in]		-
- * @param[in]		-
+ * @param[in]		- *pSPIHandle is global variable to hold buffer address
+ * 						and length.
+ *
+ * @param[in]		- *pTxBuffer is the pointer to the data.
+ *
+ * @param[in]		- Len is the number of bytes to transmit.
  *
  * @return			-
  *
@@ -504,7 +508,19 @@ uint8_t SPI_SendDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pTxBuffer, uint32_t Le
  */
 uint8_t SPI_ReceiveDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pRxBuffer, uint32_t Len)
 {
+	uint8_t state = pSPIHandle->RxState;
+	if(state != SPI_BUSY_IN_RX)
+	{
+		// (1)
+		pSPIHandle->pRxBuffer = pRxBuffer;
+		pSPIHandle->RxLen = Len;
+		// (2)
+		pSPIHandle->RxState = SPI_BUSY_IN_RX;
+		// (3)
+		pSPIHandle->pSPIx->CR2 |= (1 << SPI_CR2_RXNEIE );
+	}
 
+	return state;
 }
 
 /***************************************************************************
