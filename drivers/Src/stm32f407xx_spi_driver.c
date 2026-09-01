@@ -451,16 +451,20 @@ void SPI_IRQPriorityConfig(uint8_t IRQNumber, uint8_t IRQPriority)
 /***************************************************************************
  * @fn				- SPI_SendDataIT
  *
- * @brief			-
+ * @brief			- Non-blocking way to send data.
  *
- * @param[in]		-
- * @param[in]		-
+ * @param[in]		- *pSPIHandle is global variable to hold buffer address
+ * 						and length.
  *
- * @return			-
+ * @param[in]		- *pTxBuffer is the pointer to the data.
+ *
+ * @param[in]		- Len is the number of bytes to transmit.
+ *
+ * @return			- state of pSPIHandle
  *
  * @Note			-
  */
-void SPI_SendDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pTxBuffer, uint32_t Len)
+uint8_t SPI_SendDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pTxBuffer, uint32_t Len)
 {
 	/*
 	 * 	1 - Save the Tx buffer address and Len information in some global variables
@@ -468,11 +472,22 @@ void SPI_SendDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pTxBuffer, uint32_t Len)
 	 * 		take over the same SPI peripheral until transmission is over
 	 * 	3 - Enable the TXEIE control bit to get interrupt whenever the TXE flas is
 	 * 		set in SR
-	 * 	4 - Data transmission will be handle by the ISR code
+	 * 	. - Data transmission will be handle by the ISR code
 	 */
 
-	// (1)
+	uint8_t state = pSPIHandle->TxState;
+	if(state != SPI_BUSY_IN_RX)
+	{
+		// (1)
+		pSPIHandle->pTxBuffer = pTxBuffer;
+		pSPIHandle->TxLen = Len;
+		// (2)
+		pSPIHandle->TxState = SPI_BUSY_IN_TX;
+		// (3)
+		pSPIHandle->pSPIx->CR2 |= (1 << SPI_CR2_TXEIE );
+	}
 
+	return state;
 }
 
 /***************************************************************************
@@ -487,7 +502,7 @@ void SPI_SendDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pTxBuffer, uint32_t Len)
  *
  * @Note			-
  */
-void SPI_ReceiveDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pRxBuffer, uint32_t Len)
+uint8_t SPI_ReceiveDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pRxBuffer, uint32_t Len)
 {
 
 }
