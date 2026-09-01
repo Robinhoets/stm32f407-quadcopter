@@ -524,7 +524,7 @@ uint8_t SPI_ReceiveDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pRxBuffer, uint32_t
 }
 
 /***************************************************************************
- * @fn				-
+ * @fn				- SPI_IRQHandling
  *
  * @brief			-
  *
@@ -533,9 +533,42 @@ uint8_t SPI_ReceiveDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pRxBuffer, uint32_t
  *
  * @return			-
  *
- * @Note			-
+ * @Note			- Not checking for CRCERR, MODF, FRE.
  */
 void SPI_IRQHandling(SPI_Handle_t *pHandle)
 {
+	/*
+	 * 	Understand why interrupt has been triggered. Check SR for code.
+	 * 	If RXNE, handle RXNE event (reception of data)
+	 * 	if TXE, handle txe event (transmission of data)
+	 * 	if error, handle error
+	 */
+	uint8_t temp1, temp2;
+	// check for TXE
+	temp1 = pHandle->pSPIx->SR & ( 1 << SPI_SR_TXE );
+	temp2 = pHandle->pSPIx->CR2 & ( 1 << SPI_CR2_TXEIE );
+
+	if(temp1 && temp2)
+	{
+		// handle TXE
+		spi_txe_interrupt_handle();
+	}
+
+	temp1 = pHandle->pSPIx->SR & ( 1 << SPI_SR_RXNE );
+	temp2 = pHandle->pSPIx->CR2 & ( 1 << SPI_SR_RXNE );
+	if(temp1 && temp2)
+	{
+		// handle RXNE
+		spi_rxne_interrupt_handle();
+	}
+
+	// check for OVR flag
+	temp1 = pHandle->pSPIx->SR & ( 1 << SPI_SR_OVR );
+	temp2 = pHandle->pSPIx->CR2 & ( 1 << SPI_CR2_ERRIE );
+	if(temp1 && temp2)
+	{
+		// handle RXNE
+		spi_ovr_err_interrupt_handle();
+	}
 
 }
