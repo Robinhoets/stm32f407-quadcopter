@@ -5,6 +5,11 @@
  *      Author: Robert
  */
 #include "stm32f407xx_spi_driver.h"
+
+static void spi_txe_interrupt_handle(SPI_Handle_t *pHandle);
+static void spi_rxne_interrupt_handle(SPI_Handle_t *pHandle);
+static void spi_ovr_err_interrupt_handle(SPI_Handle_t *pHandle);
+
 /*
  * 	Peripheral Clock setup
  */
@@ -523,6 +528,83 @@ uint8_t SPI_ReceiveDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pRxBuffer, uint32_t
 	return state;
 }
 
+///*
+// * 	-------------- Helper functions for SPI_IRQHandling() ----------------
+// */
+//
+///***************************************************************************
+// * @fn				- spi_txe_interrupt_handle
+// *
+// * @brief			-
+// *
+// * @param[in]		-
+// * @param[in]		-
+// *
+// * @return			-
+// *
+// * @Note			-
+// */
+//spi_txe_interrupt_handle(SPI_Handle_t *pHandle)
+//{
+//	if( (pHandle->pSPIx->CR1 & (1 << SPI_CR1_DFF ) ) )
+//	{
+//		// load data into the DR. Typecast for two bytes
+//		pHandle->pSPIx->DR = *((uint16_t*)pHandle->pTxBuffer);
+//		// decrease Len bc sent out two bytes of data
+//		pHandle->TxLen--;
+//		pHandle->TxLen--;
+//		// point to next data item
+//		(uint16_t*)pHandle->pTxBuffer++;
+//	}
+//	else
+//	{
+//		pHandle->pSPIx->DR = *((uint16_t*)pHandle->pTxBuffer);
+//		pHandle->TxLen--;
+//		(uint16_t*)pHandle->pTxBuffer++;
+//	}
+//
+//	// if TxLen is zero, close the spi transmission and inform the application that TX is done
+//	if(! pSPIHandle->TxLen)
+//	{
+//		// prevent interrupts from setting up of TXE flag
+//		pSPIHandle->pSPIx->CR2 &= ~(1 << SPI_CR2_TXEIE);
+//	}
+//}
+//
+///***************************************************************************
+// * @fn				- SPI_IRQHandling
+// *
+// * @brief			-
+// *
+// * @param[in]		-
+// * @param[in]		-
+// *
+// * @return			-
+// *
+// * @Note			- Not checking for CRCERR, MODF, FRE.
+// */
+//spi_rxne_interrupt_handle()
+//{
+//
+//}
+//
+///***************************************************************************
+// * @fn				- SPI_IRQHandling
+// *
+// * @brief			-
+// *
+// * @param[in]		-
+// * @param[in]		-
+// *
+// * @return			-
+// *
+// * @Note			- Not checking for CRCERR, MODF, FRE.
+// */
+//spi_ovr_err_interrupt_handle()
+//{
+//
+//}
+
 /***************************************************************************
  * @fn				- SPI_IRQHandling
  *
@@ -551,7 +633,7 @@ void SPI_IRQHandling(SPI_Handle_t *pHandle)
 	if(temp1 && temp2)
 	{
 		// handle TXE
-		spi_txe_interrupt_handle();
+//		spi_txe_interrupt_handle();
 	}
 
 	temp1 = pHandle->pSPIx->SR & ( 1 << SPI_SR_RXNE );
@@ -559,7 +641,7 @@ void SPI_IRQHandling(SPI_Handle_t *pHandle)
 	if(temp1 && temp2)
 	{
 		// handle RXNE
-		spi_rxne_interrupt_handle();
+//		spi_rxne_interrupt_handle();
 	}
 
 	// check for OVR flag
@@ -568,7 +650,7 @@ void SPI_IRQHandling(SPI_Handle_t *pHandle)
 	if(temp1 && temp2)
 	{
 		// handle RXNE
-		spi_ovr_err_interrupt_handle();
+//		spi_ovr_err_interrupt_handle();
 	}
 
 }
