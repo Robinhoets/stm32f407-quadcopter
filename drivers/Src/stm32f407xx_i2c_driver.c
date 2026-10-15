@@ -1,5 +1,5 @@
 /*
- * stm32f407xx_spi_driver.c
+ * stm32f407xx_I2C_driver.c
  *
  *  Created on: Oct 15, 2026
  *      Author: Robert
@@ -53,5 +53,32 @@ void I2C_PeriClockControl(I2C_RegDef_t *pI2Cx, uint8_t EnorDi)
 		{
 			I2C3_PCLK_DI();
 		}
+	}
+}
+
+/***************************************************************************
+ * @fn				- I2C_DeInit
+ *
+ * @brief			- De-initialize a I2C at a given address
+ *
+ * @param[in]		- base address of the I2C port
+ *
+ * @return			- none
+ *
+ * @Note			-
+ */
+void i2c_DeInit(I2C_RegDef_t *pI2Cx)
+{
+	if(pI2Cx == I2C1)
+	{
+		I2C1_PCLK_DI();
+	}
+	else if(pI2Cx == I2C2)
+	{
+		I2C2_PCLK_DI();
+	}
+	else if(pI2Cx == I2C3)
+	{
+		I2C3_PCLK_DI();
 	}
 }
