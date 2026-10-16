@@ -82,3 +82,86 @@ void i2c_DeInit(I2C_RegDef_t *pI2Cx)
 		I2C3_PCLK_DI();
 	}
 }
+
+/*
+ * 	IRQ Configuration and ISR handling
+ */
+
+/***************************************************************************
+ * @fn				- I2C_IRQConfig
+ *
+ * @brief			- Enable or disables the correct interrupt.
+ *
+ * @param[in]		- The interrupt number the user calls.
+ *
+ * @param[in]		- Whether to enable or disable.
+ *
+ * @return			- none
+ *
+ * @Note			-
+ */
+void I2C_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi)
+{
+	if(EnorDi == ENABLE)
+	{
+		/*
+		 * 	if -> ISER0 register
+		 * 	else if -> ISER1 register
+		 * 	else if -> ISER2 register
+		 */
+		if(IRQNumber <= 31)
+		{
+			*NVIC_ISER0 |= ( 1 << IRQNumber);
+		}
+		else if(IRQNumber > 31 && IRQNumber < 64)
+		{
+			*NVIC_ISER1 |= ( 1 << IRQNumber % 32);
+		}
+		else if(IRQNumber >= 64 && IRQNumber < 96)
+		{
+			*NVIC_ISER2 |= ( 1 << IRQNumber % 64);
+		}
+	}
+	else
+	{
+		if(IRQNumber <= 31)
+		{
+			*NVIC_ICER0 |= ( 1 << IRQNumber);
+		}
+		else if(IRQNumber > 31 && IRQNumber < 64)
+		{
+			*NVIC_ICER1 |= ( 1 << IRQNumber % 32);
+		}
+		else if(IRQNumber >= 64 && IRQNumber < 96)
+		{
+			*NVIC_ICER2 |= ( 1 << IRQNumber % 64);
+		}
+	}
+}
+
+/***************************************************************************
+ * @fn				- I2C_IRQPriorityConfig
+ *
+ * @brief			- Set the priority of an interrupt.
+ *
+ * @param[in]		- The number of the interrupt being called.
+ *
+ * @param[in]		- The priority of the interrupt to be set.
+ *
+ * @return			- none
+ *
+ * @Note			-
+ */
+void I2C_IRQPriorityConfig(uint8_t IRQNumber, uint8_t IRQPriority)
+{
+	/*
+	 * 	1 - find IPR register
+	 */
+	uint8_t iprx = IRQNumber / 4;
+	uint8_t iprx_section = IRQNumber % 4;
+
+	// shift by 4 to put into top 4 bits of 8 bit address
+	uint8_t shift_amount = (8 * iprx_section) + (8 - NO_PR_BITS_IMPLEMENTED);
+//	*(NVIC_PR_BASE_ADDR + (iprx * 4)) |= ( IRQPriority << shift_amount );
+	*(NVIC_PR_BASE_ADDR + iprx) |= ( IRQPriority << shift_amount );
+}
