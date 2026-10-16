@@ -162,6 +162,29 @@ void I2C_IRQPriorityConfig(uint8_t IRQNumber, uint8_t IRQPriority)
 
 	// shift by 4 to put into top 4 bits of 8 bit address
 	uint8_t shift_amount = (8 * iprx_section) + (8 - NO_PR_BITS_IMPLEMENTED);
-//	*(NVIC_PR_BASE_ADDR + (iprx * 4)) |= ( IRQPriority << shift_amount );
 	*(NVIC_PR_BASE_ADDR + iprx) |= ( IRQPriority << shift_amount );
+}
+
+/***************************************************************************
+ * @fn				- I2C_PeripheralControl
+ *
+ * @brief			- Enable or disable the I2C peripheral.
+ *
+ * @param[in]		- *pI2Cx - pointer to I2C_RegDef_t
+ * @param[in]		- EnOrDi - enable or disable
+ *
+ * @return			- void
+ *
+ * @Note			-
+ */
+void I2C_PeripheralControl(I2C_RegDef_t *pI2Cx,uint8_t EnOrDi)
+{
+	if(EnOrDi == ENABLE)
+	{
+		pI2Cx->CR1 |= (1 << I2C_CR1_PE);
+	}
+	else
+	{
+		pI2Cx->CR1 &= ~(1 << I2C_CR1_PE);
+	}
 }
